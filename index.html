@@ -1,297 +1,281 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2685.4">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Jogo da Tabuada</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#5C94FC;font-family:'Press Start 2P',monospace;-webkit-tap-highlight-color:transparent;}
+#wrap{max-width:480px;margin:0 auto;min-height:100vh;background:#5C94FC;}
+#topbar{background:#1a1a2e;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;}
+.tb-item{color:#FAD000;font-size:8px;line-height:1.8;}
+.tb-val{color:#fff;font-size:10px;}
+.ground{background:#C84B11;height:14px;border-top:4px solid #E86A2A;}
+.ground2{background:#7B3F00;height:10px;}
+.screen{display:none;padding:16px 14px 24px;}
+.screen.active{display:block;}
+.mario-title{color:#FAD000;font-size:13px;text-align:center;margin-bottom:4px;text-shadow:3px 3px #7B3F00;}
+.mario-sub{color:#fff;font-size:8px;text-align:center;margin-bottom:16px;line-height:1.8;}
+.sel-hint{color:#FAD000;font-size:7px;text-align:center;margin-bottom:10px;}
+.tables-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px;}
+.tbl-btn{background:#1a1a2e;border:3px solid #444;color:#888;font-family:'Press Start 2P',monospace;font-size:16px;padding:14px 4px;cursor:pointer;text-align:center;border-radius:4px;min-height:52px;}
+.tbl-btn.sel{background:#FAD000;color:#7B3F00;border-color:#C84B11;font-size:18px;box-shadow:0 4px 0 #7B3F00;}
+.sel-summary{color:#fff;font-size:8px;text-align:center;margin-bottom:14px;min-height:16px;line-height:1.8;}
+.mario-btn{display:block;width:100%;background:#E52521;border:3px solid #7B3F00;color:#fff;font-family:'Press Start 2P',monospace;font-size:10px;padding:14px;cursor:pointer;text-align:center;margin-bottom:10px;border-radius:4px;}
+.mario-btn:disabled{background:#555;border-color:#333;color:#888;cursor:default;}
+.mario-btn.green{background:#43A047;border-color:#1a1a2e;}
+#hud{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.hud-cell{background:#1a1a2e;border:2px solid #FAD000;padding:8px 4px;text-align:center;border-radius:4px;}
+.hud-lbl{color:#FAD000;font-size:7px;margin-bottom:4px;}
+.hud-v{color:#fff;font-size:11px;}
+#timer-display{text-align:center;color:#FAD000;font-size:12px;margin-bottom:10px;letter-spacing:2px;}
+#prog-wrap{display:flex;gap:5px;margin-bottom:12px;justify-content:center;flex-wrap:wrap;}
+.prog-coin{width:18px;height:18px;border-radius:50%;background:#1a1a2e;border:2px solid #444;}
+.prog-coin.done{background:#FAD000;border-color:#C84B11;}
+.prog-coin.wrong-mark{background:#E52521;border-color:#7B3F00;}
+#qblock{background:#C84B11;border:4px solid #7B3F00;padding:18px 14px;text-align:center;margin-bottom:12px;border-radius:4px;position:relative;}
+#qblock::before{content:'?';position:absolute;top:-14px;right:12px;background:#FAD000;color:#7B3F00;font-family:'Press Start 2P',monospace;font-size:11px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;border:2px solid #7B3F00;border-radius:2px;}
+#question-text{color:#FAD000;font-size:22px;margin-bottom:14px;}
+#answer-input{background:#1a1a2e;border:3px solid #FAD000;color:#FAD000;font-family:'Press Start 2P',monospace;font-size:22px;width:120px;text-align:center;padding:10px 6px;outline:none;border-radius:4px;-webkit-appearance:none;}
+#answer-input:focus{border-color:#fff;}
+#answer-input.correct{background:#1a4a1a;border-color:#43A047;color:#7fff7f;}
+#answer-input.wrong{background:#4a1a1a;border-color:#E52521;color:#ff8080;}
+#feedback{color:#FAD000;font-size:9px;min-height:20px;margin-top:10px;line-height:1.6;}
+#confirm-btn{margin-top:12px;background:#43A047;border:3px solid #1a1a2e;color:#fff;font-family:'Press Start 2P',monospace;font-size:10px;padding:12px 20px;cursor:pointer;border-radius:4px;min-width:160px;}
+.lb-title{color:#FAD000;font-size:8px;margin-bottom:8px;text-align:center;}
+.lb-row{display:flex;justify-content:space-between;align-items:center;background:#1a1a2e;border:1px solid #333;padding:8px;margin-bottom:4px;border-radius:4px;gap:4px;}
+.lb-rank{color:#FAD000;font-size:8px;min-width:18px;}
+.lb-tables{color:#aaa;font-size:7px;flex:1;margin:0 4px;}
+.lb-score{color:#fff;font-size:8px;}
+.lb-time{color:#43A047;font-size:8px;margin-left:6px;}
+.lb-best{border-color:#FAD000;}
+.lb-empty{color:#666;font-size:8px;text-align:center;padding:12px;}
+#end-title{color:#FAD000;font-size:16px;text-align:center;margin-bottom:10px;text-shadow:2px 2px #7B3F00;}
+#end-stats{background:#1a1a2e;border:2px solid #FAD000;padding:12px;margin-bottom:12px;border-radius:4px;}
+.es-row{display:flex;justify-content:space-between;margin-bottom:8px;}
+.es-lbl{color:#FAD000;font-size:8px;}
+.es-val{color:#fff;font-size:8px;}
+.new-record{color:#FAD000;font-size:10px;text-align:center;margin-bottom:12px;animation:blink .8s step-start infinite;line-height:2;}
+@keyframes blink{50%{opacity:0;}}
+</style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="pt-BR"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1">&lt;meta charset="UTF-8"/&gt;</p>
-<p class="p1">&lt;meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/&gt;</p>
-<p class="p1">&lt;title&gt;Jogo da Tabuada&lt;/title&gt;</p>
-<p class="p1">&lt;link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet"/&gt;</p>
-<p class="p1">&lt;style&gt;</p>
-<p class="p1">*{box-sizing:border-box;margin:0;padding:0;}</p>
-<p class="p1">body{background:#5C94FC;font-family:'Press Start 2P',monospace;-webkit-tap-highlight-color:transparent;}</p>
-<p class="p1">#wrap{max-width:480px;margin:0 auto;min-height:100vh;background:#5C94FC;}</p>
-<p class="p1">#topbar{background:#1a1a2e;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;}</p>
-<p class="p1">.tb-item{color:#FAD000;font-size:8px;line-height:1.8;}</p>
-<p class="p1">.tb-val{color:#fff;font-size:10px;}</p>
-<p class="p1">.ground{background:#C84B11;height:14px;border-top:4px solid #E86A2A;}</p>
-<p class="p1">.ground2{background:#7B3F00;height:10px;}</p>
-<p class="p1">.screen{display:none;padding:16px 14px 24px;}</p>
-<p class="p1">.screen.active{display:block;}</p>
-<p class="p1">.mario-title{color:#FAD000;font-size:13px;text-align:center;margin-bottom:4px;text-shadow:3px 3px #7B3F00;}</p>
-<p class="p1">.mario-sub{color:#fff;font-size:8px;text-align:center;margin-bottom:16px;line-height:1.8;}</p>
-<p class="p1">.sel-hint{color:#FAD000;font-size:7px;text-align:center;margin-bottom:10px;}</p>
-<p class="p1">.tables-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px;}</p>
-<p class="p1">.tbl-btn{background:#1a1a2e;border:3px solid #444;color:#888;font-family:'Press Start 2P',monospace;font-size:16px;padding:14px 4px;cursor:pointer;text-align:center;border-radius:4px;min-height:52px;}</p>
-<p class="p1">.tbl-btn.sel{background:#FAD000;color:#7B3F00;border-color:#C84B11;font-size:18px;box-shadow:0 4px 0 #7B3F00;}</p>
-<p class="p1">.sel-summary{color:#fff;font-size:8px;text-align:center;margin-bottom:14px;min-height:16px;line-height:1.8;}</p>
-<p class="p1">.mario-btn{display:block;width:100%;background:#E52521;border:3px solid #7B3F00;color:#fff;font-family:'Press Start 2P',monospace;font-size:10px;padding:14px;cursor:pointer;text-align:center;margin-bottom:10px;border-radius:4px;}</p>
-<p class="p1">.mario-btn:disabled{background:#555;border-color:#333;color:#888;cursor:default;}</p>
-<p class="p1">.mario-btn.green{background:#43A047;border-color:#1a1a2e;}</p>
-<p class="p1">#hud{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}</p>
-<p class="p1">.hud-cell{background:#1a1a2e;border:2px solid #FAD000;padding:8px 4px;text-align:center;border-radius:4px;}</p>
-<p class="p1">.hud-lbl{color:#FAD000;font-size:7px;margin-bottom:4px;}</p>
-<p class="p1">.hud-v{color:#fff;font-size:11px;}</p>
-<p class="p1">#timer-display{text-align:center;color:#FAD000;font-size:12px;margin-bottom:10px;letter-spacing:2px;}</p>
-<p class="p1">#prog-wrap{display:flex;gap:5px;margin-bottom:12px;justify-content:center;flex-wrap:wrap;}</p>
-<p class="p1">.prog-coin{width:18px;height:18px;border-radius:50%;background:#1a1a2e;border:2px solid #444;}</p>
-<p class="p1">.prog-coin.done{background:#FAD000;border-color:#C84B11;}</p>
-<p class="p1">.prog-coin.wrong-mark{background:#E52521;border-color:#7B3F00;}</p>
-<p class="p1">#qblock{background:#C84B11;border:4px solid #7B3F00;padding:18px 14px;text-align:center;margin-bottom:12px;border-radius:4px;position:relative;}</p>
-<p class="p1">#qblock::before{content:'?';position:absolute;top:-14px;right:12px;background:#FAD000;color:#7B3F00;font-family:'Press Start 2P',monospace;font-size:11px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;border:2px solid #7B3F00;border-radius:2px;}</p>
-<p class="p1">#question-text{color:#FAD000;font-size:22px;margin-bottom:14px;}</p>
-<p class="p1">#answer-input{background:#1a1a2e;border:3px solid #FAD000;color:#FAD000;font-family:'Press Start 2P',monospace;font-size:22px;width:120px;text-align:center;padding:10px 6px;outline:none;border-radius:4px;-webkit-appearance:none;}</p>
-<p class="p1">#answer-input:focus{border-color:#fff;}</p>
-<p class="p1">#answer-input.correct{background:#1a4a1a;border-color:#43A047;color:#7fff7f;}</p>
-<p class="p1">#answer-input.wrong{background:#4a1a1a;border-color:#E52521;color:#ff8080;}</p>
-<p class="p1">#feedback{color:#FAD000;font-size:9px;min-height:20px;margin-top:10px;line-height:1.6;}</p>
-<p class="p1">#confirm-btn{margin-top:12px;background:#43A047;border:3px solid #1a1a2e;color:#fff;font-family:'Press Start 2P',monospace;font-size:10px;padding:12px 20px;cursor:pointer;border-radius:4px;min-width:160px;}</p>
-<p class="p1">.lb-title{color:#FAD000;font-size:8px;margin-bottom:8px;text-align:center;}</p>
-<p class="p1">.lb-row{display:flex;justify-content:space-between;align-items:center;background:#1a1a2e;border:1px solid #333;padding:8px;margin-bottom:4px;border-radius:4px;gap:4px;}</p>
-<p class="p1">.lb-rank{color:#FAD000;font-size:8px;min-width:18px;}</p>
-<p class="p1">.lb-tables{color:#aaa;font-size:7px;flex:1;margin:0 4px;}</p>
-<p class="p1">.lb-score{color:#fff;font-size:8px;}</p>
-<p class="p1">.lb-time{color:#43A047;font-size:8px;margin-left:6px;}</p>
-<p class="p1">.lb-best{border-color:#FAD000;}</p>
-<p class="p1">.lb-empty{color:#666;font-size:8px;text-align:center;padding:12px;}</p>
-<p class="p1">#end-title{color:#FAD000;font-size:16px;text-align:center;margin-bottom:10px;text-shadow:2px 2px #7B3F00;}</p>
-<p class="p1">#end-stats{background:#1a1a2e;border:2px solid #FAD000;padding:12px;margin-bottom:12px;border-radius:4px;}</p>
-<p class="p1">.es-row{display:flex;justify-content:space-between;margin-bottom:8px;}</p>
-<p class="p1">.es-lbl{color:#FAD000;font-size:8px;}</p>
-<p class="p1">.es-val{color:#fff;font-size:8px;}</p>
-<p class="p1">.new-record{color:#FAD000;font-size:10px;text-align:center;margin-bottom:12px;animation:blink .8s step-start infinite;line-height:2;}</p>
-<p class="p1">@keyframes blink{50%{opacity:0;}}</p>
-<p class="p1">&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1">&lt;div id="wrap"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="topbar"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="tb-item"&gt;TABUADA&lt;br&gt;&lt;span class="tb-val" id="hdr-tables"&gt;—&lt;/span&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="tb-item" style="text-align:center"&gt;RECORDE&lt;br&gt;&lt;span class="tb-val" id="hdr-best"&gt;—&lt;/span&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="tb-item" style="text-align:right"&gt;MUNDO&lt;br&gt;&lt;span class="tb-val"&gt;1-1&lt;/span&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="screen active" id="menu-screen"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="mario-title"&gt;TABUADA&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="mario-sub"&gt;toque para escolher as tabuadas&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="sel-hint"&gt;toque nos números para selecionar&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="tables-grid" id="tables-grid"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="sel-summary" id="sel-summary"&gt;nenhuma selecionada&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;button class="mario-btn" id="start-btn" disabled onclick="startGame()"&gt;▶ JOGAR&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div style="margin-top:16px;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="lb-title"&gt;— RECORDES —&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="lb-rows"&gt;&lt;div class="lb-empty"&gt;nenhum recorde ainda&lt;/div&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="screen" id="play-screen"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="hud"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="hud-cell"&gt;&lt;div class="hud-lbl"&gt;PONTOS&lt;/div&gt;&lt;div class="hud-v" id="hv-score"&gt;0&lt;/div&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="hud-cell"&gt;&lt;div class="hud-lbl"&gt;VIDAS&lt;/div&gt;&lt;div class="hud-v" id="hv-lives"&gt;♥♥♥&lt;/div&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="hud-cell"&gt;&lt;div class="hud-lbl"&gt;QUESTÃO&lt;/div&gt;&lt;div class="hud-v" id="hv-q"&gt;1/10&lt;/div&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="timer-display"&gt;⏱ &lt;span id="hv-time"&gt;0:00&lt;/span&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="prog-wrap"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="qblock"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="question-text"&gt;_ × _ = ?&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;input id="answer-input" type="number" inputmode="numeric" pattern="[0-9]*" min="0" max="999" placeholder="?" autocomplete="off"/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;br&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;button id="confirm-btn" onclick="confirmAnswer()"&gt;✓ CONFIRMAR&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="feedback"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="screen" id="end-screen"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="end-title"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="end-stats"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="new-rec-msg"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;button class="mario-btn" onclick="showMenu()"&gt;◀ MENU&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;button class="mario-btn green" onclick="startGame()"&gt;▶ DE NOVO&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div style="margin-top:16px;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="lb-title"&gt;— RECORDES —&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="lb-rows2"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="ground"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="ground2"&gt;&lt;/div&gt;</p>
-<p class="p1">&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;script&gt;</p>
-<p class="p1">const TOTAL_Q=10;</p>
-<p class="p1">let selected=new Set(),score,lives,current,blocked,questions,correctAnswer;</p>
-<p class="p1">let elapsed=0,timerInterval=null;</p>
-<p class="p1">let scores=[];</p>
-<p class="p2"><br></p>
-<p class="p1">function saveScores(){try{localStorage.setItem('tabuada-mario-scores',JSON.stringify(scores));}catch(e){}}</p>
-<p class="p1">function loadScores(){try{const r=localStorage.getItem('tabuada-mario-scores');if(r)scores=JSON.parse(r);}catch(e){}renderLB();updateHeader();}</p>
-<p class="p1">function fmtTime(s){return Math.floor(s/60)+':'+(s%60&lt;10?'0':'')+s%60;}</p>
-<p class="p2"><br></p>
-<p class="p1">function renderLB(){</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const html=scores.length?scores.map((s,i)=&gt;`</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="lb-row${i===0?' lb-best':''}"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;span class="lb-rank"&gt;${i+1}.&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;span class="lb-tables"&gt;${s.tables}&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;span class="lb-score"&gt;${s.score}pts&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;span class="lb-time"&gt;${fmtTime(s.time)}&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;`).join(''):'&lt;div class="lb-empty"&gt;nenhum recorde ainda&lt;/div&gt;';</p>
-<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('lb-rows').innerHTML=html;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const el2=document.getElementById('lb-rows2');</p>
-<p class="p1"><span class="Apple-converted-space">  </span>if(el2)el2.innerHTML=html;</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">function tabKey(){return[...selected].sort((a,b)=&gt;a-b).join(',');}</p>
-<p class="p2"><br></p>
-<p class="p1">function updateHeader(){</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const tabs=tabKey();</p>
-<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('hdr-tables').textContent=tabs||'—';</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const rel=scores.filter(s=&gt;s.tables===tabs);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('hdr-best').textContent=rel.length?rel[0].score+'pts':'—';</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">function updateSelSummary(){</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const arr=[...selected].sort((a,b)=&gt;a-b);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const el=document.getElementById('sel-summary');</p>
-<p class="p1"><span class="Apple-converted-space">  </span>el.textContent=arr.length?'selecionado: tabuada do '+arr.join(', '):'nenhuma selecionada';</p>
-<p class="p1"><span class="Apple-converted-space">  </span>updateHeader();</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">const grid=document.getElementById('tables-grid');</p>
-<p class="p1">for(let n=1;n&lt;=10;n++){</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const btn=document.createElement('button');</p>
-<p class="p1"><span class="Apple-converted-space">  </span>btn.className='tbl-btn';btn.textContent=n;btn.id='tb'+n;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>btn.onclick=()=&gt;{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if(selected.has(n)){selected.delete(n);btn.classList.remove('sel');}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>else{selected.add(n);btn.classList.add('sel');}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('start-btn').disabled=selected.size===0;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>updateSelSummary();</p>
-<p class="p1"><span class="Apple-converted-space">  </span>};</p>
-<p class="p1"><span class="Apple-converted-space">  </span>grid.appendChild(btn);</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">function buildProgress(){</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const pw=document.getElementById('prog-wrap');pw.innerHTML='';</p>
-<p class="p1"><span class="Apple-converted-space">  </span>for(let i=0;i&lt;TOTAL_Q;i++){const d=document.createElement('div');d.className='prog-coin';d.id='pc'+i;pw.appendChild(d);}</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">function shuffle(arr){for(let i=arr.length-1;i&gt;0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}</p>
-<p class="p2"><br></p>
-<p class="p1">function generateQuestions(){</p>
-<p class="p1"><span class="Apple-converted-space">  </span>let pool=[];</p>
-<p class="p1"><span class="Apple-converted-space">  </span>selected.forEach(t=&gt;{for(let i=1;i&lt;=10;i++)pool.push({a:t,b:i,ans:t*i});});</p>
-<p class="p1"><span class="Apple-converted-space">  </span>return shuffle(pool).slice(0,TOTAL_Q);</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">function showMenu(){</p>
-<p class="p1"><span class="Apple-converted-space">  </span>clearInterval(timerInterval);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>['end-screen','play-screen'].forEach(id=&gt;document.getElementById(id).classList.remove('active'));</p>
-<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('menu-screen').classList.add('active');</p>
-<p class="p1"><span class="Apple-converted-space">  </span>renderLB();</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">function startGame(){</p>
-<p class="p1"><span class="Apple-converted-space">  </span>score=0;lives=3;current=0;blocked=false;elapsed=0;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>questions=generateQuestions();</p>
-<p class="p1"><span class="Apple-converted-space">  </span>clearInterval(timerInterval);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>timerInterval=setInterval(()=&gt;{elapsed++;document.getElementById('hv-time').textContent=fmtTime(elapsed);},1000);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>buildProgress();</p>
-<p class="p1"><span class="Apple-converted-space">  </span>['menu-screen','end-screen'].forEach(id=&gt;document.getElementById(id).classList.remove('active'));</p>
-<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('play-screen').classList.add('active');</p>
-<p class="p1"><span class="Apple-converted-space">  </span>updateHUD();loadQuestion();</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">function livesStr(n){return Array(3).fill(0).map((_,i)=&gt;i&lt;n?'♥':'♡').join('');}</p>
-<p class="p2"><br></p>
-<p class="p1">function updateHUD(){</p>
-<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('hv-score').textContent=score;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('hv-lives').textContent=livesStr(lives);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('hv-q').textContent=(current+1)+'/'+TOTAL_Q;</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">function loadQuestion(){</p>
-<p class="p1"><span class="Apple-converted-space">  </span>if(current&gt;=TOTAL_Q){clearInterval(timerInterval);endGame(true);return;}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>blocked=false;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const q=questions[current];</p>
-<p class="p1"><span class="Apple-converted-space">  </span>correctAnswer=q.ans;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('question-text').textContent=q.a+' × '+q.b+' = ?';</p>
-<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('feedback').textContent='';</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const inp=document.getElementById('answer-input');</p>
-<p class="p1"><span class="Apple-converted-space">  </span>inp.value='';inp.className='';</p>
-<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('hv-q').textContent=(current+1)+'/'+TOTAL_Q;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>setTimeout(()=&gt;inp.focus(),80);</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">document.getElementById('answer-input').addEventListener('keydown',e=&gt;{if(e.key==='Enter')confirmAnswer();});</p>
-<p class="p2"><br></p>
-<p class="p1">function confirmAnswer(){</p>
-<p class="p1"><span class="Apple-converted-space">  </span>if(blocked)return;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const inp=document.getElementById('answer-input');</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const val=parseInt(inp.value);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>if(isNaN(val)){document.getElementById('feedback').textContent='DIGITE UM NÚMERO!';return;}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>blocked=true;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>if(val===correctAnswer){</p>
-<p class="p1"><span class="Apple-converted-space">    </span>inp.classList.add('correct');score+=10;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('feedback').textContent='CORRETO! +10';</p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('pc'+current).classList.add('done');</p>
-<p class="p1"><span class="Apple-converted-space">    </span>updateHUD();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>setTimeout(()=&gt;{current++;loadQuestion();},700);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}else{</p>
-<p class="p1"><span class="Apple-converted-space">    </span>inp.classList.add('wrong');lives--;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('pc'+current).classList.add('wrong-mark');</p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('feedback').textContent='ERA '+correctAnswer+'!';</p>
-<p class="p1"><span class="Apple-converted-space">    </span>updateHUD();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if(lives&lt;=0){setTimeout(()=&gt;{clearInterval(timerInterval);endGame(false);},1000);}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>else{setTimeout(()=&gt;{current++;loadQuestion();},1200);}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">function endGame(win){</p>
-<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('play-screen').classList.remove('active');</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const tabs=tabKey();</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const entry={score,time:elapsed,tables:tabs,date:new Date().toLocaleDateString('pt-BR')};</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const prevBest=scores.filter(s=&gt;s.tables===tabs)[0];</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const isRecord=!prevBest||(score&gt;prevBest.score)||(score===prevBest.score&amp;&amp;elapsed&lt;prevBest.time);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>scores.push(entry);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>scores.sort((a,b)=&gt;b.score-a.score||(a.time-b.time));</p>
-<p class="p1"><span class="Apple-converted-space">  </span>scores=scores.slice(0,10);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>saveScores();</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('end-title').textContent=win?'YOU WIN!':'GAME OVER';</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const acertos=score/10;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('end-stats').innerHTML=`</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="es-row"&gt;&lt;span class="es-lbl"&gt;PONTUAÇÃO&lt;/span&gt;&lt;span class="es-val"&gt;${score} pts&lt;/span&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="es-row"&gt;&lt;span class="es-lbl"&gt;ACERTOS&lt;/span&gt;&lt;span class="es-val"&gt;${acertos}/${TOTAL_Q}&lt;/span&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="es-row"&gt;&lt;span class="es-lbl"&gt;ERROS&lt;/span&gt;&lt;span class="es-val"&gt;${TOTAL_Q-acertos}&lt;/span&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="es-row"&gt;&lt;span class="es-lbl"&gt;TEMPO&lt;/span&gt;&lt;span class="es-val"&gt;${fmtTime(elapsed)}&lt;/span&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="es-row"&gt;&lt;span class="es-lbl"&gt;TABUADAS&lt;/span&gt;&lt;span class="es-val"&gt;${tabs}&lt;/span&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>`;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const recEl=document.getElementById('new-rec-msg');</p>
-<p class="p1"><span class="Apple-converted-space">  </span>if(isRecord&amp;&amp;win){</p>
-<p class="p1"><span class="Apple-converted-space">    </span>recEl.innerHTML='&lt;div class="new-record"&gt;★ NOVO RECORDE! ★&lt;br&gt;'+score+' pts em '+fmtTime(elapsed)+'&lt;/div&gt;';</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}else if(prevBest&amp;&amp;win){</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const diff=score-prevBest.score;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>recEl.innerHTML='&lt;div style="color:#aaa;font-size:8px;text-align:center;margin-bottom:10px;line-height:2;"&gt;recorde: '+prevBest.score+' pts / '+fmtTime(prevBest.time)+'&lt;br&gt;'+(diff&gt;=0?'+'+diff+' pts vs recorde':'ainda não chegou lá!')+'&lt;/div&gt;';</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}else{recEl.innerHTML='';}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>renderLB();updateHeader();</p>
-<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById('end-screen').classList.add('active');</p>
-<p class="p1">}</p>
-<p class="p2"><br></p>
-<p class="p1">loadScores();</p>
-<p class="p1">&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+<div id="wrap">
+  <div id="topbar">
+    <div class="tb-item">TABUADA<br><span class="tb-val" id="hdr-tables">—</span></div>
+    <div class="tb-item" style="text-align:center">RECORDE<br><span class="tb-val" id="hdr-best">—</span></div>
+    <div class="tb-item" style="text-align:right">MUNDO<br><span class="tb-val">1-1</span></div>
+  </div>
+
+  <div class="screen active" id="menu-screen">
+    <div class="mario-title">TABUADA</div>
+    <div class="mario-sub">toque para escolher as tabuadas</div>
+    <div class="sel-hint">toque nos números para selecionar</div>
+    <div class="tables-grid" id="tables-grid"></div>
+    <div class="sel-summary" id="sel-summary">nenhuma selecionada</div>
+    <button class="mario-btn" id="start-btn" disabled onclick="startGame()">▶ JOGAR</button>
+    <div style="margin-top:16px;">
+      <div class="lb-title">— RECORDES —</div>
+      <div id="lb-rows"><div class="lb-empty">nenhum recorde ainda</div></div>
+    </div>
+  </div>
+
+  <div class="screen" id="play-screen">
+    <div id="hud">
+      <div class="hud-cell"><div class="hud-lbl">PONTOS</div><div class="hud-v" id="hv-score">0</div></div>
+      <div class="hud-cell"><div class="hud-lbl">VIDAS</div><div class="hud-v" id="hv-lives">♥♥♥</div></div>
+      <div class="hud-cell"><div class="hud-lbl">QUESTÃO</div><div class="hud-v" id="hv-q">1/10</div></div>
+    </div>
+    <div id="timer-display">⏱ <span id="hv-time">0:00</span></div>
+    <div id="prog-wrap"></div>
+    <div id="qblock">
+      <div id="question-text">_ × _ = ?</div>
+      <input id="answer-input" type="number" inputmode="numeric" pattern="[0-9]*" min="0" max="999" placeholder="?" autocomplete="off"/>
+      <br>
+      <button id="confirm-btn" onclick="confirmAnswer()">✓ CONFIRMAR</button>
+      <div id="feedback"></div>
+    </div>
+  </div>
+
+  <div class="screen" id="end-screen">
+    <div id="end-title"></div>
+    <div id="end-stats"></div>
+    <div id="new-rec-msg"></div>
+    <button class="mario-btn" onclick="showMenu()">◀ MENU</button>
+    <button class="mario-btn green" onclick="startGame()">▶ DE NOVO</button>
+    <div style="margin-top:16px;">
+      <div class="lb-title">— RECORDES —</div>
+      <div id="lb-rows2"></div>
+    </div>
+  </div>
+
+  <div class="ground"></div>
+  <div class="ground2"></div>
+</div>
+
+<script>
+const TOTAL_Q=10;
+let selected=new Set(),score,lives,current,blocked,questions,correctAnswer;
+let elapsed=0,timerInterval=null;
+let scores=[];
+
+function saveScores(){try{localStorage.setItem('tabuada-mario-scores',JSON.stringify(scores));}catch(e){}}
+function loadScores(){try{const r=localStorage.getItem('tabuada-mario-scores');if(r)scores=JSON.parse(r);}catch(e){}renderLB();updateHeader();}
+function fmtTime(s){return Math.floor(s/60)+':'+(s%60<10?'0':'')+s%60;}
+
+function renderLB(){
+  const html=scores.length?scores.map((s,i)=>`
+    <div class="lb-row${i===0?' lb-best':''}">
+      <span class="lb-rank">${i+1}.</span>
+      <span class="lb-tables">${s.tables}</span>
+      <span class="lb-score">${s.score}pts</span>
+      <span class="lb-time">${fmtTime(s.time)}</span>
+    </div>`).join(''):'<div class="lb-empty">nenhum recorde ainda</div>';
+  document.getElementById('lb-rows').innerHTML=html;
+  const el2=document.getElementById('lb-rows2');
+  if(el2)el2.innerHTML=html;
+}
+
+function tabKey(){return[...selected].sort((a,b)=>a-b).join(',');}
+
+function updateHeader(){
+  const tabs=tabKey();
+  document.getElementById('hdr-tables').textContent=tabs||'—';
+  const rel=scores.filter(s=>s.tables===tabs);
+  document.getElementById('hdr-best').textContent=rel.length?rel[0].score+'pts':'—';
+}
+
+function updateSelSummary(){
+  const arr=[...selected].sort((a,b)=>a-b);
+  const el=document.getElementById('sel-summary');
+  el.textContent=arr.length?'selecionado: tabuada do '+arr.join(', '):'nenhuma selecionada';
+  updateHeader();
+}
+
+const grid=document.getElementById('tables-grid');
+for(let n=1;n<=10;n++){
+  const btn=document.createElement('button');
+  btn.className='tbl-btn';btn.textContent=n;btn.id='tb'+n;
+  btn.onclick=()=>{
+    if(selected.has(n)){selected.delete(n);btn.classList.remove('sel');}
+    else{selected.add(n);btn.classList.add('sel');}
+    document.getElementById('start-btn').disabled=selected.size===0;
+    updateSelSummary();
+  };
+  grid.appendChild(btn);
+}
+
+function buildProgress(){
+  const pw=document.getElementById('prog-wrap');pw.innerHTML='';
+  for(let i=0;i<TOTAL_Q;i++){const d=document.createElement('div');d.className='prog-coin';d.id='pc'+i;pw.appendChild(d);}
+}
+
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+
+function generateQuestions(){
+  let pool=[];
+  selected.forEach(t=>{for(let i=1;i<=10;i++)pool.push({a:t,b:i,ans:t*i});});
+  return shuffle(pool).slice(0,TOTAL_Q);
+}
+
+function showMenu(){
+  clearInterval(timerInterval);
+  ['end-screen','play-screen'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  document.getElementById('menu-screen').classList.add('active');
+  renderLB();
+}
+
+function startGame(){
+  score=0;lives=3;current=0;blocked=false;elapsed=0;
+  questions=generateQuestions();
+  clearInterval(timerInterval);
+  timerInterval=setInterval(()=>{elapsed++;document.getElementById('hv-time').textContent=fmtTime(elapsed);},1000);
+  buildProgress();
+  ['menu-screen','end-screen'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  document.getElementById('play-screen').classList.add('active');
+  updateHUD();loadQuestion();
+}
+
+function livesStr(n){return Array(3).fill(0).map((_,i)=>i<n?'♥':'♡').join('');}
+
+function updateHUD(){
+  document.getElementById('hv-score').textContent=score;
+  document.getElementById('hv-lives').textContent=livesStr(lives);
+  document.getElementById('hv-q').textContent=(current+1)+'/'+TOTAL_Q;
+}
+
+function loadQuestion(){
+  if(current>=TOTAL_Q){clearInterval(timerInterval);endGame(true);return;}
+  blocked=false;
+  const q=questions[current];
+  correctAnswer=q.ans;
+  document.getElementById('question-text').textContent=q.a+' × '+q.b+' = ?';
+  document.getElementById('feedback').textContent='';
+  const inp=document.getElementById('answer-input');
+  inp.value='';inp.className='';
+  document.getElementById('hv-q').textContent=(current+1)+'/'+TOTAL_Q;
+  setTimeout(()=>inp.focus(),80);
+}
+
+document.getElementById('answer-input').addEventListener('keydown',e=>{if(e.key==='Enter')confirmAnswer();});
+
+function confirmAnswer(){
+  if(blocked)return;
+  const inp=document.getElementById('answer-input');
+  const val=parseInt(inp.value);
+  if(isNaN(val)){document.getElementById('feedback').textContent='DIGITE UM NÚMERO!';return;}
+  blocked=true;
+  if(val===correctAnswer){
+    inp.classList.add('correct');score+=10;
+    document.getElementById('feedback').textContent='CORRETO! +10';
+    document.getElementById('pc'+current).classList.add('done');
+    updateHUD();
+    setTimeout(()=>{current++;loadQuestion();},700);
+  }else{
+    inp.classList.add('wrong');lives--;
+    document.getElementById('pc'+current).classList.add('wrong-mark');
+    document.getElementById('feedback').textContent='ERA '+correctAnswer+'!';
+    updateHUD();
+    if(lives<=0){setTimeout(()=>{clearInterval(timerInterval);endGame(false);},1000);}
+    else{setTimeout(()=>{current++;loadQuestion();},1200);}
+  }
+}
+
+function endGame(win){
+  document.getElementById('play-screen').classList.remove('active');
+  const tabs=tabKey();
+  const entry={score,time:elapsed,tables:tabs,date:new Date().toLocaleDateString('pt-BR')};
+  const prevBest=scores.filter(s=>s.tables===tabs)[0];
+  const isRecord=!prevBest||(score>prevBest.score)||(score===prevBest.score&&elapsed<prevBest.time);
+  scores.push(entry);
+  scores.sort((a,b)=>b.score-a.score||(a.time-b.time));
+  scores=scores.slice(0,10);
+  saveScores();
+
+  document.getElementById('end-title').textContent=win?'YOU WIN!':'GAME OVER';
+  const acertos=score/10;
+  document.getElementById('end-stats').innerHTML=`
+    <div class="es-row"><span class="es-lbl">PONTUAÇÃO</span><span class="es-val">${score} pts</span></div>
+    <div class="es-row"><span class="es-lbl">ACERTOS</span><span class="es-val">${acertos}/${TOTAL_Q}</span></div>
+    <div class="es-row"><span class="es-lbl">ERROS</span><span class="es-val">${TOTAL_Q-acertos}</span></div>
+    <div class="es-row"><span class="es-lbl">TEMPO</span><span class="es-val">${fmtTime(elapsed)}</span></div>
+    <div class="es-row"><span class="es-lbl">TABUADAS</span><span class="es-val">${tabs}</span></div>
+  `;
+  const recEl=document.getElementById('new-rec-msg');
+  if(isRecord&&win){
+    recEl.innerHTML='<div class="new-record">★ NOVO RECORDE! ★<br>'+score+' pts em '+fmtTime(elapsed)+'</div>';
+  }else if(prevBest&&win){
+    const diff=score-prevBest.score;
+    recEl.innerHTML='<div style="color:#aaa;font-size:8px;text-align:center;margin-bottom:10px;line-height:2;">recorde: '+prevBest.score+' pts / '+fmtTime(prevBest.time)+'<br>'+(diff>=0?'+'+diff+' pts vs recorde':'ainda não chegou lá!')+'</div>';
+  }else{recEl.innerHTML='';}
+
+  renderLB();updateHeader();
+  document.getElementById('end-screen').classList.add('active');
+}
+
+loadScores();
+</script>
 </body>
 </html>
